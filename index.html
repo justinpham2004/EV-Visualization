@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electric Vehicles: Imperative or Over-Prioritized</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+    
+
+
+</head>
+<body>
+    <div class="container"> <!-- Centers content and sets max width -->
+        <h1>Electric Vehicles: Imperative or Over-Prioritized?</h1>
+
+        <p>Explore this data visualization. Select the state, hour of day, and year to view the average EV demand. </p>
+        
+        <div id="vis"></div> <!--  Will hold our visualization (SVG) -->
+        <div id = "clock_box"> <h3>Time: </h3><p id = "clock">00:00:00</p> </div>
+        <div id = "tooltip" style="display:none"></div>
+        <br>
+        <h3>Current County:</h3>
+        <div id = "tooltip2" style = "display:none"></div>
+        <br>
+        <p id="value"></p>
+        <div id="slider" class = "variable" >
+            <h3> Year </h3>
+        </div>
+
+        <button onclick = "start_simulation()">Start Simulation</button>
+        <button onclick = "pause_simulation()">Pause</button>
+        <button onclick = "play_simulation()">Play</button>
+        <button onclick = "reset_simulation()">Reset Simulation</button>
+
+        
+
+    </div>
+
+    
+    <!-- Load D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

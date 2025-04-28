@@ -1,0 +1,37 @@
+/* Reset default styles */
+* {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0px auto;
+    line-height: 1.8;
+}
+
+/* Container styling for layout */
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    font-family: Arial, sans-serif;
+}
+.labels {
+    paint-order: stroke;
+    stroke: #ffffffaa;
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+#vis svg {
+    margin: 2rem 0;
+    border: 1px solid #ccc; /*otherwise you can't see this part*/
+}
+
+#tooltip {
+    position: absolute; /* So we can move it with the cursor */
+    padding: 10px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    pointer-events: none; /* Prevent tooltip from interfering with mouse events */
+    font-size: 12px;
+}
+
