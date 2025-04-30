@@ -1,30 +1,23 @@
-/********************************************************************
- *  GLOBAL STATE
- *******************************************************************/
 let currentYear  = 2023;
-let currentHour  = 0;                  // 0–23
+let currentHour  = 0;                
 let currentState = "Texas";
 
 let counties;                          // { State : ["Adams", …] }
-let data2023, data2024;                // CSV contents
-let countyPaths = null;                // <path> selection on screen
+let data2023, data2024;                // CSV files
+let countyPaths = null;               
 
-/* clock -----------------------------------------------------------*/
+/* clock */
 let simulatedTime   = new Date(0);
 const speedMultiplier = 1000;          // 10 ms real = 10 s sim
 const updateInterval  = 10;            // 10 ms
 let timer     = null;
 let isRunning = false;
 
-/********************************************************************
- *  HELPERS
- *******************************************************************/
+
 const pad = n => n.toString().padStart(2,"0");
 const normaliseCounty = s => s.toLowerCase().replace(/ county.*/, "").trim();
 
-/********************************************************************
- *  LOAD CSVs  (add 'key')
- *******************************************************************/
+/* Loading the dataset */
 async function loadData(){
   const [d23,d24] = await Promise.all([
       d3.csv("data/2023_Cleaned_Dataset.csv"),
@@ -36,9 +29,7 @@ async function loadData(){
   data2024 = d24;
 }
 
-/********************************************************************
- *  YEAR SLIDER  (2023 – 2035)
- *******************************************************************/
+/* Year Slider */
 function setupSelector(){
   const slider = d3.sliderHorizontal()
       .min(2023).max(2035).step(1).width(500).displayValue(false)
@@ -50,9 +41,7 @@ function setupSelector(){
     .call(slider);
 }
 
-/********************************************************************
- *  LEGEND  — build once, update per range
- *******************************************************************/
+/* Legend (Red to Green to display emission levels) */
 function buildLegend(){
   const legendW = 20, legendH = 150;
 
@@ -97,9 +86,7 @@ function updateLegend(minKw,maxKw){
     .call(d3.axisRight(scale).ticks(5).tickFormat(d3.format(".1f")));
 }
 
-/********************************************************************
- *  COLOUR UPDATE  (state × year × hour)
- *******************************************************************/
+/*  Updating color  (state × year × hour) */
 function updateVis(){
   if(!countyPaths) return;
 
@@ -114,7 +101,7 @@ function updateVis(){
   const domain = minKw===maxKw ? [minKw-1, maxKw+1] : [minKw,maxKw];
 
   const colour = d3.scaleSequentialPow()
-        .exponent(2)                              // γ = 2 (exponential)
+        .exponent(2)                             
         .domain(domain)
         .interpolator(d3.interpolateRgb("green","red"));
 
@@ -127,9 +114,7 @@ function updateVis(){
   updateLegend(minKw,maxKw);
 }
 
-/********************************************************************
- *  DRAW MAP + TOOL-TIPS
- *******************************************************************/
+/* Map Drawing + Tooltips for States */
 function createVis(us){
   const stateTopo  = topojson.feature(us,us.objects.states);
   const countyTopo = topojson.feature(us,us.objects.counties);
@@ -146,7 +131,7 @@ function createVis(us){
       g.attr("transform",e.transform).attr("stroke-width",1/e.transform.k);
   }));
 
-  /* STATES --------------------------------------------------------*/
+  /* STATES */
   g.append("g").attr("cursor","pointer")
     .selectAll("path").data(stateTopo.features).enter().append("path")
       .attr("d",path).attr("fill","#808080")
@@ -170,7 +155,7 @@ function createVis(us){
     .attr("fill","none").attr("stroke","#fff")
     .attr("d",path(topojson.mesh(us,us.objects.states,(a,b)=>a!==b)));
 
-  /* STATE CLICK---------------------------------------------------*/
+  /* Clicking by State */
   function clicked(event,d){
     currentState = d.properties.name;
     const stId = d.id.slice(0,2);
@@ -208,9 +193,7 @@ function createVis(us){
   }
 }
 
-/********************************************************************
- *  CLOCK & BUTTONS
- *******************************************************************/
+/* CLOCK & BUTTONS */
 function updateClockDisplay(){
   const s=Math.floor(simulatedTime.getTime()/1000);
   document.getElementById("clock").textContent =
@@ -232,9 +215,7 @@ function reset_simulation(){ pause_simulation(); simulatedTime=new Date(0); curr
 function play_simulation (){ if(!isRunning) start_clock(); }
 function start_simulation(){ start_clock(); }
 
-/********************************************************************
- *  BOOTSTRAP
- *******************************************************************/
+/* BOOTSTRAP */
 async function init(){
   try{
     await loadData();
