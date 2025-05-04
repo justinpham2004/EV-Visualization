@@ -33,7 +33,9 @@ async function loadData(){
 function setupSelector(){
   const slider = d3.sliderHorizontal()
       .min(2023).max(2035).step(1).width(500).displayValue(false)
-      .on("onchange", v => { currentYear = v; updateVis(); });
+      .on("onchange", v => { currentYear = v; updateVis(); })
+      .tickFormat(d3.format("d")) // <- removes commas (uses plain integer)
+      ;
 
   d3.select("#slider")
     .append("svg").attr("width",700).attr("height",100)
