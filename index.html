@@ -21,39 +21,59 @@
         <p>
             Explore this data visualization. Select the state, hour of day, and
             year to view the average EV demand.
+            
         </p>
-
-        <!-- map -->
-        <div id="vis"></div>
-
-        <!-- legend (colour-bar is drawn here by script.js) -->
-        <div id="legend"></div>
-
-        <!-- tool-tips (hidden by default) -->
-        <div id="tooltip" style="display:none"></div>
         <div id="tooltip2" style="display:none"></div>
-
-        <!-- clock & current-county read-out -->
-        <h3>Time:</h3>
-        <p id="clock">00:00:00</p>
-
-        <h3>Current County:</h3>
-        <div id="current-county-info"></div>
-
-        <!-- year slider placeholder -->
-        <div id="slider">
-            <h3>Year</h3>
+    
+        <!-- flex row: left is map, right is controls -->
+        <div style="display: flex; align-items: flex-start; gap: 40px; width: 100%;">
+            <!-- map -->
+            <div id="vis"></div>
+    
+            <!-- controls on the right -->
+            <div id="controls" style="min-width: 150px;">
+                <!-- legend (colour-bar is drawn here by script.js) -->
+                <div id="legend"></div>
+    
+                <!-- tool-tips -->
+                <div id="tooltip" style="display:none"></div>
+                
+    
+                <!-- clock & current-county read-out -->
+                <h3>Time:</h3>
+                <p id="clock">00:00:00</p>
+    
+                <h3>Current County:</h3>
+                <div id="current-county-info"></div>
+    
+                <!-- year slider -->
+                <div id="slider">
+                    <h3>Year</h3>
+                </div>
+    
+                <!-- buttons -->
+                <div id = "vis_container">
+                
+                   
+                    <div style="margin-top: 5px;">
+                        <button class = "button-4" onclick="start_simulation()">Start Simulation</button>
+                        <button class = "button-4" onclick="reset_simulation()">Reset Simulation</button>
+                        <button class = "button-4" onclick="play_simulation()">Play</button>
+                        <button class = "button-4" onclick="pause_simulation()">Pause</button>
+                        
+                    </div>
+                </div>
+                
+                 
+               
+            </div>
         </div>
-
-        <!-- buttons -->
-        <button onclick="start_simulation()">Start Simulation</button>
-        <button onclick="pause_simulation()">Pause</button>
-        <button onclick="play_simulation()">Play</button>
-        <button onclick="reset_simulation()">Reset Simulation</button>
     </div>
 
-    <!-- main script -->
     <script src="js/script.js"></script>
+
 </body>
+
+
 
 </html>
