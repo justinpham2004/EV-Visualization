@@ -1,6 +1,4 @@
-/********************************************************************
- *  STATE ABBREVIATION → FULL NAME (for TopoJSON lookup)
- *******************************************************************/
+/* Abbreviating States */
 const stateAbbrToName = {
   AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
   CO: "Colorado", CT: "Connecticut", DE: "Delaware", FL: "Florida", GA: "Georgia",
@@ -15,9 +13,7 @@ const stateAbbrToName = {
   WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming", DC: "District of Columbia"
 };
 
-/********************************************************************
- *  GLOBAL STATE
- *******************************************************************/
+/* Global Variables */
 let currentYear = 2023;
 let currentHour = 0;          // 0‑23
 let currentState = "Texas";
@@ -27,22 +23,18 @@ let data2023, data2024;        // CSV rows
 let statePaths = null;        // 50 state <path>s
 let countyPaths = null;        // counties of the clicked state
 
-/* clock -----------------------------------------------------------*/
+/* clock ----------------- */
 let simulatedTime = new Date(0);
 const speedMultiplier = 1000;  // 10 ms real = 10 s sim
 const updateInterval = 10;
 let timer = null;
 let isRunning = false;
 
-/********************************************************************
- *  HELPERS
- *******************************************************************/
+/* Helper variables for map */
 const pad = n => n.toString().padStart(2, "0");
 const normaliseCounty = s => s.toLowerCase().replace(/ county.*/, "").trim();
 
-/********************************************************************
- *  LOAD CSVs  (add `key` + `state`)
- *******************************************************************/
+/* LOAD CSVs  (add `key` + `state`) */
 async function loadData() {
   const [d23, d24] = await Promise.all([
     d3.csv("data/2023_Cleaned_Dataset.csv"),
@@ -60,9 +52,7 @@ async function loadData() {
   data2024 = d24;
 }
 
-/********************************************************************
- *  YEAR SLIDER
- *******************************************************************/
+/* Slider for Year */
 function setupSelector() {
   const slider = d3.sliderHorizontal()
     .min(2023).max(2035).step(1)
@@ -76,9 +66,7 @@ function setupSelector() {
     .call(slider);
 }
 
-/********************************************************************
- *  LEGEND  (build once, update per hour)
- *******************************************************************/
+/* LEGEND  (Updating by Hour per County) */
 function buildLegend() {
   const H = 150, W = 20;
   const svg = d3.select("#legend").append("svg")
@@ -112,16 +100,14 @@ function updateLegend(maxKw) {
     .call(d3.axisRight(scale).ticks(5).tickFormat(d3.format(".1f")));
 }
 
-/********************************************************************
- *  MAIN UPDATE (state totals + counties)
- *******************************************************************/
+/* Main Visualization Method */
 function updateVis() {
   if (!statePaths) return;
 
   const base = currentYear === 2023 ? data2023 : data2024;
   const hourRows = base.filter(r => +r["Hour of Day"] === currentHour);
 
-  /* ── 1  state totals ───────────────────────────────────────────*/
+  /* ── 1  state totals */
   const stateTotals = d3.rollup(
     hourRows,
     v => d3.sum(v, d => +d["Avg. Demand (kW)"]),
@@ -140,7 +126,7 @@ function updateVis() {
       return tot ? stateColour(tot) : "#808080";
     });
 
-  /* ── 2  counties (if a state is open) ──────────────────────────*/
+  /* ── 2  counties (if a state is open) */
   if (countyPaths) {
     const wanted = counties[currentState].map(c => c.toLowerCase());
     const rows = hourRows.filter(r => wanted.includes(r.key));
@@ -164,9 +150,7 @@ function updateVis() {
   updateLegend(maxStateKw);
 }
 
-/********************************************************************
- *  DRAW MAP + TOOL‑TIPS
- *******************************************************************/
+/* Map + Tooltips */
 function createVis(us) {
   const stateTopo = topojson.feature(us, us.objects.states);
   const countyTopo = topojson.feature(us, us.objects.counties);
@@ -182,7 +166,7 @@ function createVis(us) {
     g.attr("transform", e.transform).attr("stroke-width", 1 / e.transform.k);
   }));
 
-  /* STATES */
+  /* States */
   statePaths = g.append("g").attr("cursor", "pointer")
     .selectAll("path").data(stateTopo.features).enter().append("path")
     .attr("d", path).attr("fill", "#808080")
@@ -206,7 +190,7 @@ function createVis(us) {
     .attr("fill", "none").attr("stroke", "#fff")
     .attr("d", path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
 
-  /* STATE CLICK -> counties */
+  /* State Click on counties */
   function clicked(event, d) {
     currentState = d.properties.name;
     const stId = d.id.slice(0, 2);
@@ -244,9 +228,7 @@ function createVis(us) {
   }
 }
 
-/********************************************************************
- *  CLOCK + BUTTONS
- *******************************************************************/
+/* Clock and Buttons */
 function updateClockDisplay() {
   const s = Math.floor(simulatedTime.getTime() / 1000);
   document.getElementById("clock").textContent =
@@ -261,10 +243,10 @@ function start_clock() {
     currentHour = simulatedTime.getUTCHours();
     updateClockDisplay();
     update
-  }, updateInterval);
+}, updateInterval);
 }
 
-/* stop the timer and freeze the clock */
+/* For stopping timer */
 function pause_simulation() {
   if (isRunning) {
     clearInterval(timer);
@@ -272,28 +254,25 @@ function pause_simulation() {
   }
 }
 
-/* reset both the simulated time and the colouring */
+/* Resetting the simulated time and colors */
 function reset_simulation() {
   pause_simulation();
   simulatedTime = new Date(0);
   currentHour = 0;
   updateClockDisplay();
-  updateVis();               // recolour map for hour‑0
+  updateVis();             
 }
 
-/* resume after a pause */
+/* Resuming after pause */
 function play_simulation() {
   if (!isRunning) start_clock();
 }
 
-/* convenience alias for the “Start Simulation” button */
+/* “Start Simulation” button */
 function start_simulation() {
   start_clock();
 }
 
-/********************************************************************
- *  BOOTSTRAP
- *******************************************************************/
 async function init() {
   try {
     /* 1 ─ load datasets and add helper fields */
@@ -309,11 +288,10 @@ async function init() {
     const us = await d3.json("data/counties-albers-10m.json");
     createVis(us);
 
-    /* 4 ─ UI widgets */
     setupSelector();
     buildLegend();
 
-    /* 5 ─ first colour pass (hour 0) + clock display */
+    /* 4 ─ first colour pass (hour 0) + clock display */
     updateVis();
     updateClockDisplay();
   } catch (err) {
@@ -321,6 +299,5 @@ async function init() {
   }
 }
 
-/* launch once the page is ready */
 window.addEventListener("load", init);
 
