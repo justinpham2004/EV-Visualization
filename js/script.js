@@ -60,6 +60,7 @@ function setupSelector() {
     .width(500).displayValue(false)
     .on("onchange", v => { currentYear = v; updateVis(); });
 
+
   d3.select("#slider")
     .append("svg").attr("width", 700).attr("height", 100)
     .append("g").attr("transform", "translate(30,30)")
