@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Electric Vehicles: Imperative or Over-Prioritized?</title>
+
+    <!-- styles -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Electric Vehicles: Imperative or Over-Prioritized?</h1>
+        <p>
+            Explore this data visualization. Select the state, hour of day, and
+            year to view the average EV demand.
+            
+        </p>
+        <div id="tooltip2" style="display:none"></div>
+    
+        <!-- flex row: left is map, right is controls -->
+        <div style="display: flex; align-items: flex-start; gap: 40px; width: 100%;">
+            <!-- map -->
+            <div id="vis"></div>
+    
+            <!-- controls on the right -->
+            <div id="controls" style="min-width: 150px;">
+                <!-- legend (colour-bar is drawn here by script.js) -->
+                <div id="legend"></div>
+    
+                <!-- tool-tips -->
+                <div id="tooltip" style="display:none"></div>
+                
+    
+                <!-- clock & current-county read-out -->
+                <h3>Time:</h3>
+                <p id="clock">00:00:00</p>
+    
+                <h3>Current County:</h3>
+                <div id="current-county-info"></div>
+    
+                <!-- year slider -->
+                <div id="slider">
+                    <h3>Year</h3>
+                </div>
+    
+                <!-- buttons -->
+                <div id = "vis_container">
+                
+                   
+                    <div style="margin-top: 5px;">
+                        <button class = "button-4" onclick="start_simulation()">Start Simulation</button>
+                        <button class = "button-4" onclick="reset_simulation()">Reset Simulation</button>
+                        <button class = "button-4" onclick="play_simulation()">Play</button>
+                        <button class = "button-4" onclick="pause_simulation()">Pause</button>
+                        
+                    </div>
+                </div>
+                
+                 
+               
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+
+</body>
+
+
+
+</html>
