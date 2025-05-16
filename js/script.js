@@ -295,6 +295,139 @@ function reset_simulation(){ pause_simulation(); simulatedTime=new Date(0); curr
 function play_simulation (){ if(!isRunning) start_clock(); }
 function start_simulation(){ start_clock(); }
 
+/************************** Graph 2 *********************** */
+
+const margin = {top: 80, right: 60, bottom: 60, left: 100};
+const width = 800 - margin.left - margin.right;
+const height = 600 - margin.top - margin.bottom;
+
+const tooltip = d3.select("#tooltip3")
+  .style("position", "absolute")
+  .style("background", "#fff")
+  .style("border", "1px solid #ccc")
+  .style("padding", "6px")
+  .style("border-radius", "4px")
+  .style("pointer-events", "none")
+  .style("font-size", "12px")
+  .style("display", "none");
+
+const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+const svg2 = d3.select('#vis2')
+  .append('svg')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+  .append('g')
+    .attr('transform', `translate(${margin.left},${margin.top})`);
+
+const t = 1000;
+const options = ['state_kwh_demand','state_sqr_mile','state_num_stations'];
+const desc_labels = {
+  'state_kwh_demand': 'Avg Daily kWh Demand',
+  'state_sqr_mile': 'State Size (sq mi)',
+  'state_num_stations': 'Number of Stations'
+};
+
+let allData = [];
+let yearVariable = null;
+let xVar = 'state_kwh_demand';
+let yVar = 'state_num_stations';
+
+function setupSelector2() {
+  d3.select('#xVariable')
+    .selectAll('option')
+    .data(options)
+    .join('option')
+      .attr('value', d=>d)
+      .text(d=>desc_labels[d]);
+  d3.select('#yVariable')
+    .selectAll('option')
+    .data(options)
+    .join('option')
+      .attr('value', d=>d)
+      .text(d=>desc_labels[d]);
+
+  const years = Array.from(new Set(allData.map(d=>d.Year))).sort((a,b)=>a-b);
+  d3.select('#yearVariable')
+    .selectAll('option')
+    .data(years)
+    .join('option')
+      .attr('value', d=>d)
+      .text(d=>d);
+
+  yearVariable = years[0];
+  d3.select('#yearVariable').property('value', yearVariable);
+  d3.select('#xVariable').property('value', xVar);
+  d3.select('#yVariable').property('value', yVar);
+
+  d3.select('#xVariable').on('change', function() { xVar=this.value; updateAxes2(); updateVis2(); });
+  d3.select('#yVariable').on('change', function() { yVar=this.value; updateAxes2(); updateVis2(); });
+  d3.select('#yearVariable').on('change', function() { yearVariable=+this.value; updateAxes2(); updateVis2(); });
+}
+
+function updateAxes2() {
+  svg2.selectAll('.axis,.labels').remove();
+  const dataFiltered = allData.filter(d=>d.Year===yearVariable && d.state!=='dc');
+
+  const sorted = dataFiltered.slice().sort((a,b)=>d3.ascending(+a[xVar],+b[xVar]));
+  const xDomain = sorted.map(d=>d[xVar]);
+  const xScale2 = d3.scaleBand().domain(xDomain).range([0,width]).padding(0.1);
+  const maxTicks = 20;
+  const step = Math.ceil(xDomain.length/maxTicks);
+  const ticks = xDomain.filter((_,i)=>i%step===0);
+  svg2.append('g').attr('class','axis x-axis').attr('transform',`translate(0,${height})`)
+    .call(d3.axisBottom(xScale2).tickValues(ticks))
+    .selectAll('text').attr('dy','0.75em').attr('dx','-0.5em').attr('transform','rotate(-45)').style('text-anchor','end');
+
+  const ratioFn = d=> +d[yVar] / (+d[xVar]||1);
+  const ratios = dataFiltered.map(ratioFn).filter(v=>v>=0);
+  const minR = ratios.length?d3.min(ratios):0;
+  const maxR = ratios.length?d3.max(ratios):0;
+  const yScale2 = d3.scaleLinear().domain([0, maxR]).range([height,0]).nice();
+
+  svg2.append('g').attr('class','axis y-axis')
+    .call(d3.axisLeft(yScale2));
+
+  svg2.append('text').attr('class','labels').attr('x',width/2).attr('y',height+margin.bottom-10).attr('text-anchor','middle').text(desc_labels[xVar]);
+  svg2.append('text').attr('class','labels').attr('transform','rotate(-90)').attr('x',-height/2).attr('y',-margin.left+15).attr('text-anchor','middle').text(`${desc_labels[yVar]} per ${desc_labels[xVar]}`);
+
+  window._xScale2 = xScale2; window._yScale2 = yScale2;
+}
+
+function updateVis2() {
+  const xScale2 = window._xScale2;
+  const yScale2 = window._yScale2;
+  const dataFiltered = allData.filter(d=>d.Year===yearVariable && d.state!=='dc');
+
+  const bars = svg2.selectAll('.bar').data(dataFiltered, d=>d.state);
+  bars.join(
+    enter=>enter.append('rect').attr('class','bar').attr('x',d=>xScale2(d[xVar])).attr('width',xScale2.bandwidth()).attr('y',height).attr('height',0).attr('fill','steelblue'),
+    update=>update,
+    exit=>exit.remove()
+  )
+  .call(sel=>sel.transition(t).attr('x',d=>xScale2(d[xVar])).attr('y',d=>yScale2(+d[yVar]/(+d[xVar]||1))).attr('height',d=>height-yScale2(+d[yVar]/(+d[xVar]||1))));
+
+  svg2.selectAll('.bar').on('mouseover',(event,d)=>{
+    const r=(+d[yVar]/(+d[xVar]||1)).toFixed(2);
+    tooltip.style('display','block').html(`<strong>${d.state.toUpperCase()}</strong><br/>${desc_labels[xVar]}: ${d[xVar]}<br/>${desc_labels[yVar]}: ${d[yVar]}<br/>Ratio: ${r}`).style('left',event.pageX+10+'px').style('top',event.pageY-28+'px');
+  }).on('mousemove',event=>tooltip.style('left',event.pageX+10+'px').style('top',event.pageY-28+'px')).on('mouseout',()=>tooltip.style('display','none'));
+}
+
+async function loadData2() {
+  const raw = await d3.csv('./output/vis2_data.csv', d=>({Year:+d.Year, state:d.state.toLowerCase(), state_kwh_demand:+d.daily_kwh, state_sqr_mile:+d.state_sqr_mile, state_num_stations:+d.TotalStations}));
+  const nested = d3.groups(raw, d=>d.Year, d=>d.state);
+  allData = [];
+  nested.forEach(([Year, stateGroups])=>{
+    stateGroups.forEach(([state, records])=>{
+      if(state==='dc') return;
+      const avg = d3.mean(records, r=>r.state_kwh_demand);
+      const info = records[0];
+      allData.push({Year, state, state_kwh_demand:avg, state_sqr_mile:info.state_sqr_mile, state_num_stations:info.state_num_stations});
+    });
+  });
+}
+
+
+
 /* Bootstrap */
 async function init(){
   try{
@@ -310,6 +443,14 @@ async function init(){
     buildLegend();
     updateVis();
     updateClockDisplay();
+
+    /*************** Infographic 2 *************/
+    await loadData2(); 
+    setupSelector2(); 
+    updateAxes2(); 
+    updateVis2();  
+
+
   }catch(err){ console.error(err);}
 }
 window.addEventListener("load", init);
