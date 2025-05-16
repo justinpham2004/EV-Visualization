@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -42,9 +43,10 @@
                 <!-- clock & current-county read-out -->
                 <h3>Time:</h3>
                 <p id="clock">00:00:00</p>
-    
+                
+                <!--
                 <h3>Current County:</h3>
-                <div id="current-county-info"></div>
+                <div id="current-county-info"></div> -->
     
                 <!-- year slider -->
                 <div id="slider">
@@ -68,6 +70,30 @@
                
             </div>
         </div>
+    </div>
+    <div class="main-layout">
+        <!-- LEFT PANEL: Chart & Controls -->
+            <div id="vis2"></div>
+            <div class="controls">
+                <label for="xVariable">X:</label>
+                <select id="xVariable" class="variable"></select>
+
+                <label for="yVariable">Y:</label>
+                <select id="yVariable" class="variable"></select>
+
+                <label for="yearVariable">Select a Year:</label>
+                <select id="yearVariable" class="yearVariable"></select>
+
+                <p id="value"></p>
+
+                <div id="tooltip3" style="display:none"></div>
+
+            <!-- D3 Visualization goes here -->
+            
+        </div>
+
+    
+    <!-- Load D3.js -->
     </div>
 
     <script src="js/script.js"></script>
