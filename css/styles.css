@@ -1,123 +1,170 @@
-/* reset / base ---------------------------------------------------*/
 * {
-    box-sizing: border-box;
-    margin: 3px;
-    padding: 6px;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-
-.main-layout {
-    max-width: 90%;
-    margin: 2rem auto;
-    /*border: 2px solid black;*/
+body {
+  background: #FDFBF2;
+  font-family: 'Merriweather', serif;
+  color: #333;
+  line-height: 1.6;
 }
 
-/* map frame */
-#vis svg {
-    border: 1px solid #ccc;
-    margin: 1rem 0;
-    height: 90%
+.page-flex {
+  display: flex;
+  gap: 24px;
 }
 
-/* general tool-tip style */
-#tooltip,
-#tooltip2 {
-    position: absolute;
-    padding: 8px 10px;
-    background: #fff;
-    border: 1px solid #999;
-    border-radius: 4px;
-    font-size: 13px;
-    pointer-events: none;
+/* scrollable text panel (right) */
+.sidebar {
+  width: 440px;
+  max-width: 32%;
+  height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  font-size: 14px;
 }
 
-/* legend floating right of map (optional) */
+/* left column */
+.main-pane {
+  flex: 1;
+  padding: 20px 30px;
+}
+
+/* Box that encloses map, controls, bar chart */
+.card {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .05);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.ev-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.map-box svg {
+  border: 1px solid #ccc;
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: contain;
+}
+
 #legend svg {
-    float: right;
-    margin-left: 2px;
+  float: right;
+  margin-left: 2px;
+}
+
+.map-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 #clock {
-    outline: 1px black solid;
-    padding: 4px ;
-    width: 100px ;
-    border-radius: 7px;
-    box-shadow: 3px;
+  outline: 1px solid #000;
+  padding: 4px;
+  width: 100px;
+  border-radius: 7px;
 }
 
-.main-layout {
-  margin: 20px;
-  width: 90%;
-  /*outline: black 1px;*/
-  align-items: center;         /* horizontal centering */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
+.chart-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 #vis2 svg {
-  display: inline-block;
-  margin: 1rem 0;
+  width: 100%;
+  max-width: auto;
 }
 
+.chart-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
 
-/*button styling*/
+#vis2 text.labels {
+  transform: translateY(12px);
+}
 
-/* CSS */
+/* nudge x-axis label */
+
+#tooltip,
+#tooltip2,
+#tooltip3 {
+  position: absolute;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #999;
+  border-radius: 4px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10;
+}
+
 .button-4 {
   appearance: none;
-  background-color: #FAFBFC;
-  border: 1px solid rgba(27, 31, 35, 0.15);
+  background: #FAFBFC;
+  border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
-  box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
-  box-sizing: border-box;
+  box-shadow: rgba(27, 31, 35, .04)0 1px 0,
+    rgba(255, 255, 255, .25)0 1px 0 inset;
   color: #24292E;
   cursor: pointer;
   display: inline-block;
-  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  list-style: none;
   padding: 6px 16px;
-  position: relative;
-  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-  white-space: nowrap;
-  word-wrap: break-word;
-  width: 200px
+  transition: background-color .2s cubic-bezier(.3, 0, .5, 1);
+  width: 200px;
 }
 
 .button-4:hover {
-  background-color: #F3F4F6;
-  text-decoration: none;
-  transition-duration: 0.1s;
+  background: #F3F4F6;
 }
 
 .button-4:disabled {
-  background-color: #FAFBFC;
-  border-color: rgba(27, 31, 35, 0.15);
+  background: #FAFBFC;
   color: #959DA5;
   cursor: default;
 }
 
 .button-4:active {
-  background-color: #EDEFF2;
-  box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
-  transition: none 0s;
+  background: #EDEFF2;
+  box-shadow: rgba(225, 228, 232, .2)0 1px 0 inset;
 }
 
 .button-4:focus {
   outline: 1px transparent;
 }
 
-.button-4:before {
-  display: none;
-}
-
+.button-4:before,
 .button-4:-webkit-details-marker {
   display: none;
 }
