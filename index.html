@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -7,99 +6,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Electric Vehicles: Imperative or Over-Prioritized?</title>
 
-    <!-- styles -->
     <link rel="stylesheet" href="css/styles.css" />
 
-    <!-- libraries -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://unpkg.com/topojson@3"></script>
     <script src="https://unpkg.com/d3-simple-slider"></script>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Electric Vehicles: Imperative or Over-Prioritized?</h1>
-        <p>
-            Explore this data visualization. Select the state, hour of day, and
-            year to view the average EV demand.
-            
-        </p>
-        <div id="tooltip2" style="display:none"></div>
-    
-        <!-- flex row: left is map, right is controls -->
-        <div style="display: flex; align-items: flex-start; gap: 40px; width: 100%;">
-            <!-- map -->
-            <div id="vis"></div>
-    
-            <!-- controls on the right -->
-            <div id="controls" style="min-width: 150px;">
-                <!-- legend (colour-bar is drawn here by script.js) -->
-                <div id="legend"></div>
-    
-                <!-- tool-tips -->
-                <div id="tooltip" style="display:none"></div>
-                
-    
-                <!-- clock & current-county read-out -->
-                <h3>Time:</h3>
-                <p id="clock">00:00:00</p>
-                
-                <!--
-                <h3>Current County:</h3>
-                <div id="current-county-info"></div> -->
-    
-                <!-- year slider -->
-                <div id="slider">
-                    <h3>Year</h3>
-                </div>
-    
-                <!-- buttons -->
-                <div id = "vis_container">
-                
-                   
-                    <div style="margin-top: 5px;">
-                        <button class = "button-4" onclick="start_simulation()">Start Simulation</button>
-                        <button class = "button-4" onclick="reset_simulation()">Reset Simulation</button>
-                        <button class = "button-4" onclick="play_simulation()">Play</button>
-                        <button class = "button-4" onclick="pause_simulation()">Pause</button>
-                        
+
+    <div class="page-flex">
+
+        <!-- Main Column -->
+        <main class="main-pane">
+
+            <div class="card">
+
+                <!-- Page title -->
+                <header class="ev-header">
+                    <h1>Electric Vehicles: Imperative or Over-Prioritized?</h1>
+                </header>
+
+                <div id="vis" class="map-box"></div>
+
+                <div id="controls" class="map-controls">
+
+                    <div id="legend"></div>
+
+                    <h3>Time</h3>
+                    <p id="clock">00:00:00</p>
+
+                    <div id="slider">
+                        <h3>Year</h3>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="button-4" onclick="start_simulation()">Start</button>
+                        <button class="button-4" onclick="pause_simulation()">Pause</button>
+                        <button class="button-4" onclick="play_simulation()">Play</button>
+                        <button class="button-4" onclick="reset_simulation()">Reset</button>
                     </div>
                 </div>
-                
-                 
-               
+
+                <div class="chart-block">
+
+                    <div id="vis2"></div>
+
+                    <div class="chart-controls">
+                        X:
+                        <select id="xVariable"></select>
+                        Y:
+                        <select id="yVariable"></select>
+                        Year:
+                        <select id="yearVariable"></select>
+                    </div>
+
+                </div>
+
             </div>
-        </div>
+        </main>
+
+        <aside class="sidebar">
+
+            <h1>Electric Vehicles: Imperative or Over-Prioritized?</h1>
+
+            <p>As government fleets switch to electric, knowing when and where they
+                charge is key to avoiding grid overload and ensuring fair access to
+                charging stations. This dashboard uses modeled hourly demand profiles
+                from the National Renewable Energy Laboratory (Singer et al. 2025) for
+                federal, state, and municipal EV fleets. It shows average electricity
+                use by state and county so you can spot regional peaks and compare
+                different years.</p>
+
+            <section id="intro">
+                <h2>Introduction and Goals</h2>
+                <p>Explore hourly and yearly patterns in government EV charging to help
+                    planners and policy-makers identify where and when power demand is
+                    highest.</p>
+            </section>
+
+            <section id="feature-map">
+                <h2>Interactive Map</h2>
+                <p>A U.S. map shaded from pale blue (low demand) to bright yellow (high
+                    demand). Each state resets its own scale to highlight local
+                    variation.</p>
+            </section>
+
+            <section id="feature-drilldown">
+                <h2>Drill-Down & Zoom</h2>
+                <p>Click a state to zoom in on its counties, all coloured with the same
+                    scale. Drag or scroll to pan and zoom further, with borders staying
+                    sharp.</p>
+            </section>
+
+            <section id="feature-clock">
+                <h2>Time-of-Day Animation</h2>
+                <p>A live clock (HH:MM:SS) runs beside the map. Press <em>Play</em> to
+                    animate a full day in about ten seconds. The map updates each hour.
+                    Use <em>Pause</em> or <em>Reset</em> to stop or restart the cycle.</p>
+            </section>
+
+            <section id="feature-year">
+                <h2>Year Selector</h2>
+                <p>Slide or choose a year (2023–2035) to see how charging patterns change
+                    over time. The map and chart update instantly.</p>
+            </section>
+
+            <section id="feature-legend">
+                <h2>Legend & Tooltips</h2>
+                <p>A dynamic legend shows numerical steps of the blue-to-yellow scale.
+                    Hover over any area to see a tooltip with its name, the current hour,
+                    and demand in kW. Text below the map repeats this for screen
+                    readers.</p>
+            </section>
+
+            <section id="feature-chart">
+                <h2>Distribution Chart</h2>
+                <p>Below the map, a bar chart summarises how many states fall into each
+                    demand bracket. Use dropdowns to explore related metrics like charger
+                    counts or state area.</p>
+            </section>
+
+            <section id="feature-design">
+                <h2>Interactions & Responsive Design</h2>
+                <ul>
+                    <li>Responsive layout: map and chart resize to fit any screen</li>
+                    <li>Smooth transitions: updates fade in for easy tracking</li>
+                    <li>Hover highlights: regions glow on hover for clarity</li>
+                    <li>Clear pan & zoom: borders stay crisp even at 8× zoom</li>
+                    <li>Unified controls: buttons and selectors share a consistent style</li>
+                </ul>
+            </section>
+
+            <section id="team">
+                <h2>Team & Roles</h2>
+                <ul>
+                    <li>Justin Pham cleaned all the datasets from 2023 through 2035 and converted the hex data in all
+                        the files into geographical data. Each data set increased to about 14,000 datapoints from 4,500
+                        datapoints
+                        (for 13 different datasets). Justin also created the map outline for the EV Demand Map as well
+                        as
+                        the bar graph
+                        below it. Moreover, Justin helped source the data for the bar graph.
+                    </li>
+                    <li> Aryan Bhupalam made the all the datasets compatible with the map so the data was shown properly
+                        for each state and county. Aryan also created a color scale that would change based upon the
+                        georgraphical region being clicked and the timeframe in the simulation. Aryan was responsible
+                        for the style
+                        elements of the webpage.
+                    </li>
+                    <li>Muhammad Ramamni sourced the data, wrote this narrative, proofread everything,
+                        and guided the project to a polished finish.</li>
+
+                </ul>
+            </section>
+
+        </aside>
     </div>
-    <div class="main-layout">
-        <!-- LEFT PANEL: Chart & Controls -->
-            <div id="vis2"></div>
-            <div class="controls">
-                <label for="xVariable">X:</label>
-                <select id="xVariable" class="variable"></select>
 
-                <label for="yVariable">Y:</label>
-                <select id="yVariable" class="variable"></select>
-
-                <label for="yearVariable">Select a Year:</label>
-                <select id="yearVariable" class="yearVariable"></select>
-
-                <p id="value"></p>
-
-                <div id="tooltip3" style="display:none"></div>
-
-            <!-- D3 Visualization goes here -->
-            
-        </div>
-
-    
-    <!-- Load D3.js -->
-    </div>
+    <div id="tooltip" style="display:none"></div>
+    <div id="tooltip2" style="display:none"></div>
+    <div id="tooltip3" style="display:none"></div>
 
     <script src="js/script.js"></script>
-
 </body>
-
-
 
 </html>
