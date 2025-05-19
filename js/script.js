@@ -387,8 +387,8 @@ function updateAxes2() {
   svg2.append('g').attr('class','axis y-axis')
     .call(d3.axisLeft(yScale2));
 
-  svg2.append('text').attr('class','labels').attr('x',width/2).attr('y',height+margin.bottom-10).attr('text-anchor','middle').text(desc_labels[xVar]);
-  svg2.append('text').attr('class','labels').attr('transform','rotate(-90)').attr('x',-height/2).attr('y',-margin.left+15).attr('text-anchor','middle').text(`${desc_labels[yVar]} per ${desc_labels[xVar]}`);
+  //svg2.append('text').attr('class','labels').attr('x',width/2).attr('y',height+margin.bottom-10).attr('text-anchor','middle').text(desc_labels[xVar]);
+  //svg2.append('text').attr('class','labels').attr('transform','rotate(-90)').attr('x',-height/2).attr('y',-margin.left+15).attr('text-anchor','middle').text(`${desc_labels[yVar]} per ${desc_labels[xVar]}`);
 
   window._xScale2 = xScale2; window._yScale2 = yScale2;
 }
