@@ -301,6 +301,7 @@ const margin = {top: 80, right: 60, bottom: 60, left: 100};
 const width = 800 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 
+/* Tooltip information */
 const tooltip = d3.select("#tooltip3")
   .style("position", "absolute")
   .style("background", "#fff")
@@ -319,6 +320,7 @@ const svg2 = d3.select('#vis2')
   .append('g')
     .attr('transform', `translate(${margin.left},${margin.top})`);
 
+/* Constants */
 const t = 1000;
 const options = ['state_kwh_demand','state_sqr_mile','state_num_stations'];
 const desc_labels = {
@@ -331,6 +333,8 @@ let allData = [];
 let yearVariable = null;
 let xVar = 'state_kwh_demand';
 let yVar = 'state_num_stations';
+
+/* Fill out selectors */
 
 function setupSelector2() {
   d3.select('#xVariable')
@@ -364,6 +368,8 @@ function setupSelector2() {
   d3.select('#yearVariable').on('change', function() { yearVariable=+this.value; updateAxes2(); updateVis2(); });
 }
 
+/* Fill out axes on changes */
+
 function updateAxes2() {
   svg2.selectAll('.axis,.labels').remove();
   const dataFiltered = allData.filter(d=>d.Year===yearVariable && d.state!=='dc');
@@ -393,6 +399,8 @@ function updateAxes2() {
   window._xScale2 = xScale2; window._yScale2 = yScale2;
 }
 
+/*update visualizations based on any changes */
+
 function updateVis2() {
   const xScale2 = window._xScale2;
   const yScale2 = window._yScale2;
@@ -411,6 +419,9 @@ function updateVis2() {
     tooltip.style('display','block').html(`<strong>${d.state.toUpperCase()}</strong><br/>${desc_labels[xVar]}: ${d[xVar]}<br/>${desc_labels[yVar]}: ${d[yVar]}<br/>Ratio: ${r}`).style('left',event.pageX+10+'px').style('top',event.pageY-28+'px');
   }).on('mousemove',event=>tooltip.style('left',event.pageX+10+'px').style('top',event.pageY-28+'px')).on('mouseout',()=>tooltip.style('display','none'));
 }
+
+
+/* Load cleaned dataset */
 
 async function loadData2() {
   const raw = await d3.csv('./output/vis2_data.csv', d=>({Year:+d.Year, state:d.state.toLowerCase(), state_kwh_demand:+d.daily_kwh, state_sqr_mile:+d.state_sqr_mile, state_num_stations:+d.TotalStations}));
